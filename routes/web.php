@@ -3,12 +3,22 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// only for test
+use App\Models\Event;
+// end
+
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+
+    $events = Event::with('users')->get();
+    
+    return view('dashboard',compact('events'));
+
+    // return view('dashboard');
+
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

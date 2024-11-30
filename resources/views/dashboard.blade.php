@@ -11,6 +11,16 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                 </div>
+                <ul>
+                    @foreach($events as $event)
+                        <h2><strong>Nome Evento: </strong>{{$event->name}}</h2>
+
+                        @foreach($event->users as $user)
+                            <li><strong>id:</strong> {{$user->id}} - <strong>name:</strong> {{$user->name}}</li>
+                        @endforeach
+
+                    @endforeach
+                </ul>
             </div>
         </div>
     </div>
