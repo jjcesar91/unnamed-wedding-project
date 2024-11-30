@@ -16,6 +16,6 @@ class Event extends Model
     }
 
     public function directory(){
-        return $this->hasMany(Directory::class);
+        return $this->hasOne(Directory::class);
     }
 }
