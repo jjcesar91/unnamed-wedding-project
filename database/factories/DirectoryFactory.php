@@ -20,7 +20,7 @@ class DirectoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'event_id'=> Directory::factory(),
+            'event_id'=> Event::factory(),
             'name' => $this->faker->word()
         ];
     }

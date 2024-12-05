@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('description',255)->nullable();
             $table->dateTime('date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('location',40);
-            $table->enum('type',['matrimonio','promessa','battesimo','cresima','argento','oro','platino','compleanno','rinnovo','baby'])
+            $table->enum('type',['matrimonio','promessa','battesimo','cresima','argento','oro','platino','compleanno','rinnovo','baby']);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

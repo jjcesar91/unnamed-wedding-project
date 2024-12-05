@@ -18,10 +18,16 @@ class EventFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+     protected $types = ['matrimonio','promessa','battesimo','cresima','argento','oro','platino','compleanno','rinnovo','baby'];
+
     public function definition(): array
     {
         return [
-            'name'=> $this->faker->word(),
+            'title'=> $this->faker->word(),
+            'description'=> $this->faker->text(250),
+            'location'=> 'castel sant\'antangelo',
+            'type'=> $this->faker->randomElement($this->types),
             'active' => $this->faker->boolean()
         ];
     }
@@ -36,6 +42,11 @@ class EventFactory extends Factory
 
     public function withDirectory()
     {
-        return $this->has(Directory::factory(), 'directory');
+        return $this->has(Directory::factory()->state(function($attributes, Event $event){
+            return [
+                'event_id'=> $event->id,
+                'name'=> $event->id . "_" . $event->title
+            ];
+        }), 'directory');
     }
 }
