@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title',20);
             $table->string('img',20)->nullable();
             $table->string('description',255)->nullable();
-            $table->dateTime('date');
+            $table->dateTime('date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('location',40);
             $table->enum('type',['matrimonio','promessa','battesimo','cresima','argento','oro','platino','compleanno','rinnovo','baby'])
             $table->boolean('active')->default(true);
