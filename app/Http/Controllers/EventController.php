@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Event;
+
 class EventController extends Controller
 {
     /**
@@ -19,7 +21,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        return view("events.create");
+        $typeList = Event::getEventTypes();
+        return view("events.create", compact('typeList'));
     }
 
     /**

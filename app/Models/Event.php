@@ -10,7 +10,8 @@ class Event extends Model
 
     use HasFactory;
 
-    
+    const TYPES = ['matrimonio','promessa','battesimo','cresima','argento','oro','platino','compleanno','rinnovo','baby'];
+
     protected $fillable = [
         'title',
         'img',
@@ -27,5 +28,9 @@ class Event extends Model
 
     public function directory(){
         return $this->hasOne(Directory::class);
+    }
+
+    public static function getEventTypes(){
+        return self::TYPES;
     }
 }
