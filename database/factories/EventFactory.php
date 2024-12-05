@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
+
 
 use App\Models\User;
 use App\Models\Event;
@@ -42,11 +44,20 @@ class EventFactory extends Factory
 
     public function withDirectory()
     {
-        return $this->has(Directory::factory()->state(function($attributes, Event $event){
-            return [
-                'event_id'=> $event->id,
-                'name'=> $event->id . "_" . $event->title
-            ];
-        }), 'directory');
+        return $this->afterCreating(function (Event $event) {
+
+            $directoryName = $event->id . "_" . $event->title;
+
+            $directoryPath = "events/$directoryName"; 
+            if (!Storage::exists($directoryPath)) {
+                Storage::makeDirectory($directoryPath);
+            }
+
+            Directory::factory()->create([
+                'event_id' => $event->id,
+                'name' => $directoryName, 
+            ]);
+        });
     }
+
 }
