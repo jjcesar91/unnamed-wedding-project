@@ -13,7 +13,7 @@
   
             <div class="mb-4">
                 <img id="img" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">            
-                <img id="preview" src="#" alt="nascosta" accept="image/*" class="w-full h-full object-cover" style="display: none;">            
+                {{-- <img id="preview" src="#" alt="nascosta" accept="image/*" class="w-full h-full object-cover" style="display: none;">             --}}
 
                 <div class="mb-4">
                     <label for="file" name="img" class="block text-sm font-medium text-gray-700">Carica un file</label>
@@ -54,7 +54,6 @@
                     <input type="datetime-local" id="date" name="date" value="{{ now()->format('Y-m-d\TH:i') }}" min="{{ now()->format('Y-m-d\TH:i') }}" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
 
-            
 
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium text-gray-700">Descrizione</label>
@@ -73,12 +72,47 @@
     @push('scripts')
         <script>
             
-            const inputFile = document.getElementById("img");
-            console.log('pushato')
+            const img = document.getElementById("img");
+            const inputFile = document.getElementById("file");
 
-            // const reader = new FileReader();
-
+            let isReading = false;
             
+            inputFile.onchange = changePreview;
+
+            function changePreview(){
+
+                if(isReading) return;
+
+                const file = event.target.files[0];
+
+                if(!file){
+                    console.error("errore nella selezione del file");
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.readAsDataURL(file)
+                
+                reader.onload = function(e){
+                    if(e.target.result){   
+                        img.src = e.target.result;
+                        isReading = false;
+                    }else{
+                        console.error("errore nella lettura del file")
+                    }
+                }
+
+                reader.onerror = function(error){
+                    img.src = "";
+                    isReading = false;
+                    console.error("Errore nella lettura del file:", reader.error);
+                }
+
+                reader.onloadstart = function(s){
+                    isReading = true;
+                }
+            }
         </script>
     @endpush
 
