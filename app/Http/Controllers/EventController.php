@@ -30,7 +30,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $image = $request->file('file');
+        $path = $image->store('images', 'public');
     }
 
     /**

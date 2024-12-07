@@ -101,6 +101,7 @@
             const closeModalButton = document.getElementById("closeModalButton");
 
             let cropper;
+            let fileName; // necessario per la modifica del nome dopo ritaglio
             let isReading = false; // impedisco più eventi
 
 
@@ -110,6 +111,8 @@
                 if (isReading) return;
 
                 const file = event.target.files[0];
+                fileName = file.name;
+
                 if (!file) {
                     console.error("Errore nella selezione del file");
                     return;
@@ -153,40 +156,65 @@
                 };
             });
 
-        //  confermo ritaglio, prendo 250x250 dal canva e lo inserisco nella preview
+            //  confermo ritaglio, prendo 250x250 dal canva e lo inserisco nella preview
             cropButton.addEventListener("click", function() {
                 if (cropper) {
                     const canvas = cropper.getCroppedCanvas({
                         width: 250, 
                         height: 250, 
                     });
-                    croppedImage.src = canvas.toDataURL(); 
+
+                    const croppedDataURL = canvas.toDataURL();
+
+                    // Mostra l'immagine ritagliata come anteprima
+                    croppedImage.src = croppedDataURL;
+
                     isReading = false;
-                    const byteString = atob(croppedDataURL.split(',')[1]);
-                    const mimeString = croppedDataURL.split(',')[0].split(':')[1].split(';')[0];
-                    const ab = new ArrayBuffer(byteString.length);
-                    const ia = new Uint8Array(ab);
+
+                    // Decodifica il Data URL dell'immagine ritagliata in un formato comprensibile dal browser
+                    const byteString = atob(croppedDataURL.split(',')[1]); // Decodifica la parte base64 del Data URL (dopo la virgola)
+                    const mimeString = croppedDataURL.split(',')[0].split(':')[1].split(';')[0]; // Estrae il tipo MIME dall'header del Data URL (prima della virgola)
+
+                    // Crea un ArrayBuffer dalla stringa decodificata, utile per la manipolazione dei dati binari
+                    const ab = new ArrayBuffer(byteString.length); // Crea un ArrayBuffer con la lunghezza della stringa decodificata
+                    const ia = new Uint8Array(ab); // Crea un Uint8Array, che è una vista dell'ArrayBuffer per lavorare con byte singoli
+
+                    // Popola l'Uint8Array con i dati decodificati dalla stringa base64
                     for (let i = 0; i < byteString.length; i++) {
-                        ia[i] = byteString.charCodeAt(i);
+                        ia[i] = byteString.charCodeAt(i); // Assegna il valore di ogni byte (charCode) all'array
                     }
-                    const blob = new Blob([ab], { type: mimeString });
 
-                    // Crea un File dal Blob (per inviarlo tramite form)
-                    const file = new File([blob], "cropped-image.png", { type: mimeString });
+                    // Crea un Blob a partire dai dati decodificati, con il tipo MIME corretto
+                    const blob = new Blob([ab], { type: mimeString }); // Il Blob contiene i dati dell'immagine in formato binario
 
-                    // Sostituisci il file nell'input
-                    fileInput.files = createFileList(file);
+                    // Crea un nuovo File (file che può essere inviato tramite un form) usando il Blob e il nome del file
+                    const file = new File([blob], `_${fileName}`, { type: mimeString }); // Il nuovo file ha lo stesso tipo MIME e un nome personalizzato
+
+                    // Crea una lista di file con il nuovo File creato (per simularne l'aggiunta nell'input di file)
+                    fileInput.files = createFileList(file); // Sostituisce la lista dei file nell'input con il nuovo file creato
                 }
 
                 window.dispatchEvent(new CustomEvent('close-modal', { detail: 'cropModal' }));
             });
 
             function createFileList(file) {
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    return dataTransfer.files;
-}
+                // Crea un nuovo oggetto DataTransfer.
+                // DataTransfer è un oggetto che è solitamente utilizzato per gestire i dati
+                // durante operazioni di drag-and-drop (trascinamento e rilascio di file).
+                const dataTransfer = new DataTransfer(); 
 
+                // Aggiungi il file passato come argomento all'oggetto dataTransfer.
+                // L'oggetto 'dataTransfer' rappresenta i dati che verrebbero trasferiti
+                // in un'operazione di drag-and-drop. 'items.add(file)' aggiunge il file 
+                // alla lista degli oggetti che verrebbero trasferiti.
+                dataTransfer.items.add(file); 
+
+                // Restituisce un oggetto FileList, che è una lista di file.
+                // Il FileList è un oggetto che simula una lista di file, simile a quella
+                // che viene creata quando un utente seleziona dei file tramite un input di tipo file.
+                // 'dataTransfer.files' restituisce i file aggiunti al dataTransfer come un oggetto FileList.
+                return dataTransfer.files;
+            }
         </script>
     @endpush
 
