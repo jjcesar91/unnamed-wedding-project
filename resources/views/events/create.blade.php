@@ -12,7 +12,10 @@
             @csrf
   
             <div class="mb-4">
-                <img id="img" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/250';">            
+
+                <div style="max-width: 100%; margin-top: 20px;">
+                    <img id="croppedImage" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/250';">            
+                </div>
 
                 <div class="mb-4">
                     <label for="file" name="img" class="block text-sm font-medium text-gray-700">Carica un file</label>
@@ -68,63 +71,122 @@
         </form>
     </div>
 
-    @push('styles')
-    <style>
-        #img {
-        max-width: 250px;
-        max-height: 250px;
-        object-fit: cover; /* Per assicurarsi che l'immagine mantenga le proporzioni */
-        border: 1px solid #d1d5db; /* Bordo */
-        border-radius: 0.375rem; /* Arrotondamento */
-        }
-    </style>
 
-    @endpush
+   {{-- aggiungere modifica? --}}
+    <x-modal name="cropModal" :show="false" maxWidth="4xl">
+        <h2 class="text-2xl text-center font-semibold">Ritaglia l'Immagine</h2>
+
+        <div class="flex justify-center items-center my-4">
+            <img id="image" src="#" alt="Immagine da ritagliare" class="max-w-full max-h-[500px] object-contain" />
+        </div>
+
+        <div class="mt-4 flex justify-between">
+            <button id="cropButton" class="bg-green-500 text-white px-4 py-2 rounded">Ritaglia</button>
+        </div>
+    </x-modal>
+    
+
+    {{-- @push('styles')
+        <style>
+            
+        </style>
+    @endpush --}}
     
     @push('scripts')
         <script>
-            
-            const img = document.getElementById("img");
-            const inputFile = document.getElementById("file");
+            const img = document.getElementById("image");
+            const fileInput = document.getElementById("file");
+            const cropButton = document.getElementById("cropButton");
+            const croppedImage = document.getElementById("croppedImage");
+            const closeModalButton = document.getElementById("closeModalButton");
 
-            let isReading = false;
-            
-            inputFile.onchange = changePreview;
+            let cropper;
+            let isReading = false; // impedisco più eventi
 
-            function changePreview(){
 
-                if(isReading) return;
+            // Gestione del cambiamento del file
+            fileInput.addEventListener("change", function(event) {
+
+                if (isReading) return;
 
                 const file = event.target.files[0];
-
-                if(!file){
-                    console.error("errore nella selezione del file");
+                if (!file) {
+                    console.error("Errore nella selezione del file");
                     return;
                 }
 
                 const reader = new FileReader();
 
-                reader.readAsDataURL(file)
-                
-                reader.onload = function(e){
-                    if(e.target.result){   
-                        img.src = e.target.result;
-                        isReading = false;
-                    }else{
-                        console.error("errore nella lettura del file")
+                reader.readAsDataURL(file);
+
+                reader.onload = function(e) {
+                    img.src = e.target.result; 
+                    
+                    if (cropper) {
+                        cropper.destroy();
                     }
-                }
+                    
+                    // Inizializzo il cropper con img caricata
+                    cropper = new Cropper(img, {
+                        aspectRatio: 1, // Mantieni proporzioni 1:1
+                        viewMode: 1, // Limita lo spostamento dell'immagine al canvas
+                        movable: true, // Permette di spostare l'immagine
+                        zoomable: true, // Permette di zoomare
+                        scalable: true, // Permette di scalare
+                        minContainerWidth: 250,  // Imposta una larghezza minima
+                        minContainerHeight: 250,  // Imposta un'altezza minima
+                    autoCropArea: 1,
+                    });
 
-                reader.onerror = function(error){
-                    img.src = "";
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'cropModal' }));
+                };
+
+                // gestione degli stati
+                reader.onerror = function(error) {
+                    // controllo sugli errori, restituire msg nella modal e tornare al default delle img
                     isReading = false;
-                    console.error("Errore nella lettura del file:", reader.error);
+                    console.error("Errore nella lettura del file:", error);
+                };
+
+                reader.onloadstart = function() {
+                    isReading = true;
+                };
+            });
+
+        //  confermo ritaglio, prendo 250x250 dal canva e lo inserisco nella preview
+            cropButton.addEventListener("click", function() {
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 250, 
+                        height: 250, 
+                    });
+                    croppedImage.src = canvas.toDataURL(); 
+                    isReading = false;
+                    const byteString = atob(croppedDataURL.split(',')[1]);
+                    const mimeString = croppedDataURL.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const blob = new Blob([ab], { type: mimeString });
+
+                    // Crea un File dal Blob (per inviarlo tramite form)
+                    const file = new File([blob], "cropped-image.png", { type: mimeString });
+
+                    // Sostituisci il file nell'input
+                    fileInput.files = createFileList(file);
                 }
 
-                reader.onloadstart = function(s){
-                    isReading = true;
-                }
-            }
+                window.dispatchEvent(new CustomEvent('close-modal', { detail: 'cropModal' }));
+            });
+
+            function createFileList(file) {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    return dataTransfer.files;
+}
+
         </script>
     @endpush
 

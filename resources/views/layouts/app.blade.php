@@ -13,7 +13,11 @@
 
         <!-- Scripts -->
         
-        <script src="https://unpkg.com/cropperjs@next"></script> {{-- cdn cropper --}}
+        <!-- Cropper.js CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+        <!-- Cropper.js JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
