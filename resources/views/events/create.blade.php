@@ -12,7 +12,7 @@
             @csrf
   
             <div class="mb-4">
-                <img id="img" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">            
+                <img id="img" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/250';">            
 
                 <div class="mb-4">
                     <label for="file" name="img" class="block text-sm font-medium text-gray-700">Carica un file</label>
