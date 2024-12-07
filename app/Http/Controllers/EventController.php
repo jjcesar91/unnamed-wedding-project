@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+
 use App\Models\Event;
+use App\Models\User;
 
 class EventController extends Controller
 {
@@ -30,8 +34,18 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        // only for test
         $image = $request->file('file');
-        $path = $image->store('images', 'public');
+        
+        $event = Auth::user()->events()->select("events.id","title")->first();
+        
+        
+        $directoryPath = "events/" . $event->id . "_" . $event->title; 
+        
+        
+        $imageName = $image->getClientOriginalName();
+        $image->storeAs($directoryPath, $imageName, 'local');
+
     }
 
     /**
