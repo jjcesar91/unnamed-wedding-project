@@ -13,7 +13,6 @@
   
             <div class="mb-4">
                 <img id="img" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">            
-                {{-- <img id="preview" src="#" alt="nascosta" accept="image/*" class="w-full h-full object-cover" style="display: none;">             --}}
 
                 <div class="mb-4">
                     <label for="file" name="img" class="block text-sm font-medium text-gray-700">Carica un file</label>
@@ -68,6 +67,19 @@
             </div>
         </form>
     </div>
+
+    @push('styles')
+    <style>
+        #img {
+        max-width: 250px;
+        max-height: 250px;
+        object-fit: cover; /* Per assicurarsi che l'immagine mantenga le proporzioni */
+        border: 1px solid #d1d5db; /* Bordo */
+        border-radius: 0.375rem; /* Arrotondamento */
+        }
+    </style>
+
+    @endpush
     
     @push('scripts')
         <script>

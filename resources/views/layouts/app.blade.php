@@ -32,6 +32,7 @@
                 {{ $slot }}
             </main>
         </div>
+        @stack('styles')
         @stack('scripts')
     </body>
 </html>
