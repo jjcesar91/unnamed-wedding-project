@@ -12,8 +12,8 @@
         @forelse($events as $event)
             <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white">
                 <!-- Immagine -->
-                <img class="w-full h-48 object-cover" src="{{$event->img?? 'https://via.placeholder.com/250x250'}}" alt="Immagine della card">
-            
+                <img class="w-full h-48 object-cover" src="{{$event->img ? asset('storage/images/' . $event->img) : 'https://via.placeholder.com/250x250'}}" alt="Immagine della card">
+             
                 <!-- Contenuto della card -->
                 <div class="p-6">
                 <h2 class="text-xl font-bold text-gray-800">{{$event->title}}</h2>

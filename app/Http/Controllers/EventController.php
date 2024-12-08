@@ -19,7 +19,9 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Auth::user()->events()->get();
+
+        return view("events.index", compact("events"));
     }
 
     /**
@@ -41,7 +43,7 @@ class EventController extends Controller
 
         $user = Auth::user();
 
-        if($data['img']) $data['img'] = "placeholder.jpg";
+        if($data['img']) $data['img'] = null;
 
         $event = Event::create($data);
 
@@ -52,14 +54,14 @@ class EventController extends Controller
 
             $imgName = $event->id . "." . $img->getClientOriginalExtension();
 
-            $directoryPath = "events/{$event->id}_{$event->title}"; 
+            // $directoryPath = "events/{$event->id}_{$event->title}"; 
 
-            if($img->storeAs($directoryPath, $imgName, 'local')){
+            if($img->storeAs('images', $imgName, 'public')){
                 $event->update(['img' => $imgName]);  
             }
         }
 
-        return response()->json(['message' => 'Evento creato con successo!']);
+        return redirect()->route('events.index')->with('sucis_created', "L'evento " . ucfirst($event['title']) . " è stato creato con successo");
     }
 
     /**

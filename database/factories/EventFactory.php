@@ -48,11 +48,6 @@ class EventFactory extends Factory
 
             $directoryName = $event->id . "_" . $event->title;
 
-            $directoryPath = "events/$directoryName"; 
-            if (!Storage::exists($directoryPath)) {
-                Storage::makeDirectory($directoryPath);
-            }
-
             Directory::factory()->create([
                 'event_id' => $event->id,
                 'name' => $directoryName, 
