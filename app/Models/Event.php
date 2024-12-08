@@ -33,4 +33,9 @@ class Event extends Model
     public static function getEventTypes(){
         return self::TYPES;
     }
+
+    public function getAbsDecription($n = 50){
+        return mb_strlen($this->description) > 50 ? substr($this->description,0,$n) . "..." : $this->description;
+        
+    }
 }
