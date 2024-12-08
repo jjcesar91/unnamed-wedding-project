@@ -16,7 +16,7 @@
                 <!-- Contenuto della card -->
                 <div class="p-6">
                 <h2 class="text-xl font-bold text-gray-800">{{$event->title}}</h2>
-                <p class="text-gray-600 mt-2 mb-5">{{$event->getAbsDecription(100)}}</p>
+                <p class="break-words text-gray-600 mt-2 mb-5">{{$event->getAbsDecription(100)}}</p>
                 
                 <!-- Pulsante -->
                 <a href="#" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Vai ai dettagli #</a>

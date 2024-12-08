@@ -5,14 +5,8 @@
         </h2>
     </x-slot>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    @if($errors)
+        <x-input-error :messages="$errors->all()" />
     @endif
 
     <div class="max-w-full mx-auto mt-14 p-6 bg-white rounded-lg shadow-lg">
@@ -24,7 +18,7 @@
             <div class="mb-4">
 
                 <div style="max-width: 100%; margin-top: 20px;">
-                    <img id="croppedImage" src="your-image.jpg" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/250';">            
+                    <img id="croppedImage" src="" alt="Image description" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://via.placeholder.com/250';">            
                 </div>
 
                 <div class="mb-4">
@@ -37,12 +31,14 @@
         
                 <div class="mb-4">
                     <label for="title" class="block text-sm font-medium text-gray-700">Titolo</label>
-                    <input type="text" id="title" name="title" class="text-black mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <input type="text" id="title" name="title" value="{{old('title')}}" class="text-black mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" {{--required--}}>
+                    <x-input-error :messages="$errors->get('title')" />
                 </div>
            
                 <div class="mb-4">
                     <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                    <input type="text" id="location" name="location" class="text-black mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <input type="text" id="location" name="location" value="{{old('location')}}" class="text-black mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" {{--required--}}>
+                    <x-input-error :messages="$errors->get('location')" />
                 </div>
 
                 <div class="w-full mb-6">
@@ -50,26 +46,31 @@
                     Tipo di evento
                     </label>
                     <div class="relative">
-                        <select name="type" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" required>
-                            <option value="" selected>Seleziona Un tipo</option>
+                        <select name="type" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" {{--required--}}>
+                            <option value="">Seleziona Un tipo</option>
 
                             @foreach($typeList as $type)
-                                <option value="{{$type}}">{{$type}}</option>
+                                <option value="{{$type}}" @if(old('type') == $type) selected @endif>{{$type}}</option>
                             @endforeach
 
                         </select>
+                        <x-input-error :messages="$errors->get('type')" />
+
                     </div>
                 </div>
 
                 <div class="mb-4 w-1/3">
                     <label for="date" class="block text-sm font-medium text-gray-700">Data</label>
-                    <input type="datetime-local" id="date" name="date" value="{{ now()->format('Y-m-d\TH:i') }}" min="{{ now()->format('Y-m-d\TH:i') }}" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="datetime-local" id="date" name="date" value="{{ old('date',now()->format('Y-m-d\TH:i')) }}" min="{{ now()->format('Y-m-d\TH:i') }}" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <x-input-error :messages="$errors->get('date')" />
+
                 </div>
 
 
                 <div class="mb-4">
                     <label for="description" class="block text-sm font-medium text-gray-700">Descrizione</label>
-                    <textarea id="description" name="description" rows="4" maxlength="250" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    <textarea id="description" name="description" rows="4" maxlength="250" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{old('description')}}</textarea>
+                    <x-input-error :messages="$errors->get('description')" />
                 </div>
 
                 <div class="flex justify-center">
@@ -97,12 +98,6 @@
     </x-modal>
     
 
-    {{-- @push('styles')
-        <style>
-            
-        </style>
-    @endpush --}}
-    
     @push('scripts')
         <script>
             const img = document.getElementById("image");

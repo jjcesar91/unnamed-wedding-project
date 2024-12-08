@@ -33,7 +33,7 @@ class StoreEventRequest extends FormRequest
         ];
     }
 
-    public function message(): array{
+    public function messages(): array{
         return [
             'title.required' => 'Il titolo è obbligatorio.',
             'title.string' => 'Il titolo deve essere una stringa.',
