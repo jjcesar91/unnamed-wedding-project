@@ -5,6 +5,16 @@
         </h2>
     </x-slot>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="max-w-full mx-auto mt-14 p-6 bg-white rounded-lg shadow-lg">
         <h2 class="text-2xl font-semibold text-center mb-4">Crea un evento</h2>
 
@@ -19,7 +29,7 @@
 
                 <div class="mb-4">
                     <label for="file" name="img" class="block text-sm font-medium text-gray-700">Carica un file</label>
-                    <input type="file" id="file" name="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 file:bg-indigo-50 file:text-indigo-700 file:border file:border-indigo-300 file:py-2 file:px-4 file:rounded-full hover:file:bg-indigo-100" />
+                    <input type="file" id="file" name="img" accept="image/*" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 file:bg-indigo-50 file:text-indigo-700 file:border file:border-indigo-300 file:py-2 file:px-4 file:rounded-full hover:file:bg-indigo-100" />
                 </div>
             </div>       
         

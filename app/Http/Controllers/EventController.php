@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+use App\Http\Requests\StoreEventRequest;
 
 use App\Models\Event;
 use App\Models\User;
 
 class EventController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -30,12 +32,34 @@ class EventController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage. StoreEventRequest
      */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
-        
 
+        $data = $request->validated();
+
+        $user = Auth::user();
+
+        if($data['img']) $data['img'] = "placeholder.jpg";
+
+        $event = Event::create($data);
+
+        $user->events()->attach($event->id);
+
+        if ($request->hasFile('img')) {
+            $img = $request->file('img');
+
+            $imgName = $event->id . "." . $img->getClientOriginalExtension();
+
+            $directoryPath = "events/{$event->id}_{$event->title}"; 
+
+            if($img->storeAs($directoryPath, $imgName, 'local')){
+                $event->update(['img' => $imgName]);  
+            }
+        }
+
+        return response()->json(['message' => 'Evento creato con successo!']);
     }
 
     /**

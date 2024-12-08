@@ -11,7 +11,7 @@ class StoreEventRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if(auth()->check() && auth()->user()->role === 'admin') return true;
+        if(auth()->check() && in_array(auth()->user()->role, ['owner','admin'])) return true;
         abort(403, 'Accesso negato. Non hai i permessi per creare un Evento.');
     }
 
@@ -23,25 +23,25 @@ class StoreEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => "required|string|max:20|",
-            'file' => 'nullable|file|mimes:jpeg,png,jpg|size:10240'
-            "description" => "nullable|string|max:255";
+            'title' => 'required|string|max:20|',
+            'img' => 'nullable|file|mimes:jpeg,png,jpg|max:10240',
+            'description' => 'nullable|string|max:255',
             'date' => 'date|after_or_equal:today',
-            "location"=> "required|string|max:40",
+            'location'=> 'required|string|max:40',
             'type' => 'required|in:matrimonio,promessa,battesimo,cresima,argento,oro,platino,compleanno,rinnovo,baby',
-            "active"=>"boolean"
+            'active'=>'boolean'
         ];
     }
 
-    public functon message(): array{
+    public function message(): array{
         return [
             'title.required' => 'Il titolo è obbligatorio.',
             'title.string' => 'Il titolo deve essere una stringa.',
             'title.max' => 'Il titolo non può essere più lungo di 20 caratteri.',
             
-            'file.file' => 'Il campo deve contenere un file valido.',
-            'file.mimes' => 'Il file deve essere un\'immagine nei formati: jpeg, png, jpg.',
-            'file.size' => 'Il file non può superare i 10 MB.',
+            'img.file' => 'Il campo deve contenere un file valido.',
+            'img.mimes' => 'Il file deve essere un\'immagine nei formati: jpeg, png, jpg.',
+            'img.size' => 'Il file non può superare i 10 MB.',
             
             'description.string' => 'La descrizione deve essere una stringa.',
             'description.max' => 'La descrizione non può essere più lunga di 255 caratteri.',
