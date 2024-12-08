@@ -24,8 +24,8 @@ class StoreEventRequest extends FormRequest
     {
         return [
             "title" => "required|string|max:20|",
-            "img" => "string|max:20",
-            "description" => "string|max:255";
+            'file' => 'nullable|file|mimes:jpeg,png,jpg|size:10240'
+            "description" => "nullable|string|max:255";
             'date' => 'date|after_or_equal:today',
             "location"=> "required|string|max:40",
             'type' => 'required|in:matrimonio,promessa,battesimo,cresima,argento,oro,platino,compleanno,rinnovo,baby',
@@ -39,8 +39,9 @@ class StoreEventRequest extends FormRequest
             'title.string' => 'Il titolo deve essere una stringa.',
             'title.max' => 'Il titolo non può essere più lungo di 20 caratteri.',
             
-            'img.string' => 'L\'immagine deve essere una stringa.',
-            'img.max' => 'L\'immagine non può essere più lunga di 20 caratteri.',
+            'file.file' => 'Il campo deve contenere un file valido.',
+            'file.mimes' => 'Il file deve essere un\'immagine nei formati: jpeg, png, jpg.',
+            'file.size' => 'Il file non può superare i 10 MB.',
             
             'description.string' => 'La descrizione deve essere una stringa.',
             'description.max' => 'La descrizione non può essere più lunga di 255 caratteri.',
