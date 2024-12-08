@@ -73,6 +73,7 @@
 
 
    {{-- aggiungere modifica? --}}
+   {{-- cliccando fuori dalla modal nn viene triggerato l'auto crop --}}
     <x-modal name="cropModal" :show="false" maxWidth="4xl">
         <h2 class="text-2xl text-center font-semibold">Ritaglia l'Immagine</h2>
 
