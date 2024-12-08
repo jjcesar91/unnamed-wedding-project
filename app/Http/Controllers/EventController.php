@@ -34,19 +34,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        // only for test
-        $image = $request->file('file');
         
-        // \Log::debug(json_encode(Auth::user()->events()->first(),JSON_PRETTY_PRINT));
-        $event = Auth::user()->events()->select("events.id","title")->first();
-        
-        $directoryPath = "events/" . $event->id . "_" . $event->title; 
-        
-        
-        $imageName = $image->getClientOriginalName();
-        $path = $image->storeAs($directoryPath, $imageName, 'local');
-
-        \Log::debug($path);
 
     }
 
